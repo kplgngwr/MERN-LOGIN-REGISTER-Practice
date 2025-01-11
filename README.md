@@ -3,8 +3,6 @@
 This project is a full-stack application that provides user registration and login functionality with authentication. The frontend is built with React, and the backend is built with Node.js, Express, and MongoDB Atlas.
 
 ## Project Structure
-```
-## Project Structure
 
 The project is divided into two main parts:
 
