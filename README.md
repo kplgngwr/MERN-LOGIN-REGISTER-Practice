@@ -6,8 +6,8 @@ This project is a full-stack application that provides user registration and log
 
 The project is divided into two main parts:
 
-1. **Frontend**: Located in the `client` directory, built with React.
-2. **Backend**: Located in the `server` directory, built with Node.js, Express, and MongoDB Atlas.
+1. **Frontend**: Located in the `frontend` directory, built with React.
+2. **Backend**: Located in the `backend` directory, built with Node.js, Express, and MongoDB Atlas.
 
 ## Prerequisites
 
@@ -27,69 +27,51 @@ Make sure you have the following installed on your machine:
 
 2. **Install dependencies for the backend**:
     ```bash
-    cd server
+    cd backend
     npm install
     ```
 
 3. **Install dependencies for the frontend**:
     ```bash
-    cd ../client
+    cd frontend
     npm install
     ```
-
-## Configuration
-
-1. **Backend**:
-    - Create a `.env` file in the `server` directory and add the following environment variables:
-        ```
-        PORT=5000
-        MONGO_URI=your_mongodb_atlas_connection_string
-        JWT_SECRET=your_jwt_secret
-        ```
-
-2. **Frontend**:
-    - Create a `.env` file in the `client` directory and add the following environment variables:
-        ```
-        REACT_APP_API_URL=http://localhost:5000
-        ```
 
 ## MongoDB Atlas Configuration
 
 To connect your application to MongoDB Atlas, follow these steps:
 
 1. **Update MongoDB connection string**:
-    - Open the `server/config/db.js` file and update the `MONGO_URI` with your MongoDB Atlas connection string.
+    - Open the `backend/config/db.js` file and update the `MONGO_URI` with your MongoDB Atlas connection string.
 
     ```javascript
-    const mongoose = require('mongoose');
+    const { MongoClient, ServerApiVersion } = require('mongodb');
+    const uri = "<Your_MONGO_URI>";
+
+    // Create a MongoClient with a MongoClientOptions object to set the Stable API version
+    const client = new MongoClient(uri, {
+    serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+          deprecationErrors: true,
+    }
+    });
 
     const connectDB = async () => {
-        try {
-            const conn = await mongoose.connect(process.env.MONGO_URI, {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-                useCreateIndex: true,
-            });
-
-            console.log(`MongoDB Connected: ${conn.connection.host}`);
-        } catch (error) {
-            console.error(`Error: ${error.message}`);
-            process.exit(1);
-        }
+    try {
+        // Connect the client to the server (optional starting in v4.7)
+        await client.connect();
+        // Send a ping to confirm a successful connection
+        await client.db("admin").command({ ping: 1 });
+        console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    } catch (err) {
+        console.error(err.message);
+        process.exit(1);
+    }
     };
 
-    module.exports = connectDB;
+    module.exports = { connectDB, client };
     ```
-
-2. **Environment Variables**:
-    - Ensure you have the `MONGO_URI` variable set in your `.env` file located in the `server` directory.
-
-    ```
-    PORT=5000
-    MONGO_URI=your_mongodb_atlas_connection_string
-    JWT_SECRET=your_jwt_secret
-    ```
-
 By following these steps, your application will be configured to use MongoDB Atlas for database operations.
 
 
@@ -97,13 +79,13 @@ By following these steps, your application will be configured to use MongoDB Atl
 
 1. **Start the backend server**:
     ```bash
-    cd server
-    npm start
+    cd backend
+    node server.js
     ```
 
 2. **Start the frontend development server**:
     ```bash
-    cd ../client
+    cd frontend
     npm start
     ```
 
